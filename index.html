@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>双人专属日记</title>
+    <!-- 支持添加到手机桌面，模拟APP -->
+    <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoi5LqV5Li75Li76JWeIiwic2hvcnRfbmFtZSI6Iuepu+WcsCIsInN0YXJ0X3VybCI6Ii8iLCJkaXNwbGF5Ijoic3RhbmRhbG9uZSJ9">
+    <style>
+        *{box-sizing: border-box;margin:0;padding:0;font-family:system-ui;}
+        body{background:#fdf6f8;padding:20px;max-width:600px;margin:0 auto;}
+        .box{background:white;border-radius:12px;padding:16px;margin-bottom:15px;box-shadow:0 2px 8px #00000012;}
+        textarea{width:100%;min-height:120px;padding:12px;border:1px solid #eee;border-radius:8px;resize:none;}
+        button{background:#d88ca1;color:white;border:none;padding:10px 16px;border-radius:8px;margin-top:10px;cursor:pointer;}
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2>专属日记本</h2>
+        <textarea id="note" placeholder="写下今天的心事、纪念日小事..."></textarea>
+        <button onclick="saveNote()">保存日记</button>
+    </div>
+    <div class="box">
+        <h3>历史记录</h3>
+        <div id="list"></div>
+    </div>
+
+    <script>
+        // 本地临时存储，后续替换成Supabase云端即可双人同步
+        function saveNote(){
+            const val = document.getElementById('note').value.trim();
+            if(!val) return;
+            let arr = JSON.parse(localStorage.getItem('diary') || '[]');
+            arr.push({time:new Date().toLocaleString(),content:val});
+            localStorage.setItem('diary', JSON.stringify(arr));
+            renderList();
+            document.getElementById('note').value = '';
+        }
+        function renderList(){
+            const arr = JSON.parse(localStorage.getItem('diary') || '[]');
+            let html = '';
+            arr.reverse().forEach(item=>{
+                html += `<div style="padding:10px;border-bottom:1px solid #eee;">
+                    <small>${item.time}</small>
+                    <p>${item.content}</p >
+                </div>`;
+            })
+            document.getElementById('list').innerHTML = html;
+        }
+        renderList();
+    </script>
+</body>
+</html>
