@@ -1,191 +1,199 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>双人情侣日记</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<style>
-*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
-body{background:#f8f6f2;color:#444;line-height:1.6;padding:16px;max-width:800px;margin:0 auto}
-.card{background:#fff;border-radius:18px;padding:20px;margin-bottom:16px;box-shadow:0 2px 10px rgba(0,0,0,0.05)}
-h2{margin-bottom:16px;font-weight:500}
-input,textarea,select{width:100%;padding:12px 14px;border:1px solid #e7e2d9;border-radius:12px;font-size:15px;margin:8px 0;background:#fcfbfa}
-button{padding:11px 16px;border:none;border-radius:12px;background:#b8a898;color:#fff;font-size:15px;margin:6px 4px 6px 0;cursor:pointer}
-button.del{background:#d88888}
-.tag{display:inline-block;padding:4px 10px;border-radius:20px;font-size:13px;margin:4px 4px 4px 0}
-.tag-daily{background:#FFF3BC}
-.tag-happy{background:#FFD6E0}
-.tag-sad{background:#C6E0FF}
-.tag-miss{background:#E3D8FF}
-.img-preview{max-width:100%;border-radius:12px;margin:10px 0}
-.comment-block{margin:12px 0;padding:12px;background:#f8f6f2;border-radius:12px}
-.hidden{display:none}
-.search-row{display:flex;gap:8px;flex-wrap:wrap}
-#loginWrap{margin-top:120px}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>双人私密日记</title>
+    <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoi5Liq5Lq65paH5Lqs6K6hIiwic2hvcnRfbmFtZSI6Iuiwg+WcsCIsInN0YXJ0X3VybCI6Ii8iLCJkaXNwbGF5Ijoic3RhbmRhbG9uZSJ9">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans‑serif;
+        }
+        body {
+            background:#fffbf5;
+            color:#444;
+            max‑width:700px;
+            margin:0 auto;
+            padding:20px 16px;
+            line‑height:1.65;
+        }
+        .container {
+            background:#ffffff;
+            border‑radius:22px;
+            padding:28px;
+            box‑shadow:0 2px 12px rgba(0,0,0,0.06);
+        }
+        h1 {
+            text‑align:center;
+            margin‑bottom:24px;
+            font‑size:24px;
+            font‑weight:500;
+            color:#333;
+        }
+        input,textarea,button,select {
+            width:100%;
+            padding:12px 14px;
+            margin:8px 0;
+            border:1px solid #e9e2d8;
+            border‑radius:14px;
+            font‑size:15px;
+            background:#fffdfa;
+        }
+        button {
+            background:#f8e9d2;
+            border:none;
+            cursor:pointer;
+            font‑weight:500;
+        }
+        button:hover {
+            background:#f3ddbc;
+        }
+        .tag‑daily {background:#fff3bc;color:#7a6220;padding:3px 8px;border‑radius:10px;font‑size:13px;}
+        .tag‑happy {background:#ffd6e0;color:#992c4c;padding:3px 8px;border‑radius:10px;font‑size:13px;}
+        .tag‑sad {background:#cbe4ff;color:#204b80;padding:3px 8px;border‑radius:10px;font‑size:13px;}
+        .tag‑miss {background:#e4d8ff;color:#533691;padding:3px 8px;border‑radius:10px;font‑size:13px;}
+        .diary‑item {
+            border‑bottom:1px solid #f1ebe3;
+            padding:18px 0;
+        }
+        .hidden {display:none;}
+        .btn‑danger {background:#ffdfdf;}
+    </style>
 </head>
 <body>
+<div class="container">
+    <h1>双人私密日记</h1>
 
-<div id="loginWrap" class="card">
-  <h2>登录双人日记</h2>
-  <input type="email" id="loginEmail" placeholder="邮箱">
-  <input type="password" id="loginPwd" placeholder="密码">
-  <button onclick="doLogin()">登录</button>
-</div>
-
-<div id="mainWrap" class="hidden">
-  <div class="card">
-    <h2>写新日记</h2>
-    <textarea id="diaryContent" rows="5" placeholder="写下今天的故事…"></textarea>
-    <select id="moodSel">
-      <option value="日常">日常</option>
-      <option value="开心">开心</option>
-      <option value="伤心">伤心</option>
-      <option value="想念">想念</option>
-    </select>
-    <input type="file" id="imgUpload" accept="image/*">
-    <button onclick="saveDiary()">保存日记</button>
-  </div>
-
-  <div class="card">
-    <h2>搜索</h2>
-    <div class="search-row">
-      <input type="text" id="kwSearch" placeholder="关键词">
-      <input type="date" id="dateSearch">
-      <button onclick="renderDiaries()">查询</button>
+    <div id="login‑view">
+        <h3>登录</h3>
+        <input type="email" id="login‑email" placeholder="邮箱">
+        <input type="password" id="login‑pwd" placeholder="密码">
+        <button onclick="doLogin()">登录</button>
     </div>
-  </div>
 
-  <div id="diaryList"></div>
+    <div id="main‑view" class="hidden">
+        <div>
+            <select id="mood‑select">
+                <option value="日常">日常</option>
+                <option value="开心">开心</option>
+                <option value="伤心">伤心</option>
+                <option value="想念">想念</option>
+            </select>
+            <textarea id="diary‑content" placeholder="写下今天的内容……" rows="5"></textarea>
+            <input type="file" id="img‑upload" accept="image/*">
+            <button onclick="saveDiary()">保存日记</button>
+        </div>
+
+        <div style="margin‑top:24px;">
+            <input type="date" id="filter‑date">
+            <button onclick="loadDiary()">按日期筛选</button>
+            <button onclick="loadDiary()">刷新全部</button>
+        </div>
+
+        <div id="diary‑list"></div>
+        <button style="margin‑top:20px;background:#eee;" onclick="logout()">退出登录</button>
+    </div>
 </div>
 
 <script>
-const supabaseUrl = "https://mpawlhcontfzdvmepfnc.supabase.co";
-const supabaseAnonKey = "sb_publishable_umErt65gH34u4_AhbsKKyw_g8shdWge";
-const supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey, {
-  auth:{
-    autoRefreshToken:true,
-    persistSession:true,
-    detectSessionInUrl:true
-  }
+// ========== 你的真实配置 ==========
+const SUPABASE_URL = "https://mpawlhcontfzdvmepfnc.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_umErt65gH34u4_AhbsKKyw_g8shdWge";
+
+const { createClient } = window.supabase;
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+    auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl:true
+    }
 });
 
-window.onload=async function(){
-  const {data:{session}}=await supabase.auth.getSession();
-  if(session){showMain()}
+window.onload = async function(){
+    const {data:{session}} = await supabase.auth.getSession();
+    if(session){
+        showMain();
+    }
 };
 
 async function doLogin(){
-  const email=document.getElementById('loginEmail').value.trim();
-  const password=document.getElementById('loginPwd').value;
-  const {error}=await supabase.auth.signInWithPassword({email,password});
-  if(error){alert("登录失败："+error.message)}
-  else{showMain()}
+    const email = document.getElementById("login‑email").value.trim();
+    const pwd = document.getElementById("login‑pwd").value;
+    const {error} = await supabase.auth.signInWithPassword({email,password:pwd});
+    if(error) alert(error.message);
+    else showMain();
 }
 
 function showMain(){
-  document.getElementById('loginWrap').classList.add('hidden');
-  document.getElementById('mainWrap').classList.remove('hidden');
-  renderDiaries();
+    document.getElementById("login‑view").classList.add("hidden");
+    document.getElementById("main‑view").classList.remove("hidden");
+    loadDiary();
+}
+
+async function logout(){
+    await supabase.auth.signOut();
+    document.getElementById("main‑view").classList.add("hidden");
+    document.getElementById("login‑view").classList.remove("hidden");
 }
 
 async function saveDiary(){
-  const content=document.getElementById('diaryContent').value.trim();
-  const mood=document.getElementById('moodSel').value;
-  const file=document.getElementById('imgUpload').files[0];
-  if(!content){alert("请输入内容");return}
-  let imgUrl=null;
-  if(file){
-    const fn=Date.now()+"_"+file.name;
-    const {data:up,error:uErr}=await supabase.storage.from("diary-images").upload(fn,file);
-    if(uErr){alert("图片上传失败："+uErr.message)}
-    else{
-      const {data:{publicUrl}}=supabase.storage.from("diary-images").getPublicUrl(fn);
-      imgUrl=publicUrl;
+    const mood = document.getElementById("mood‑select").value;
+    const content = document.getElementById("diary‑content").value.trim();
+    if(!content) return alert("内容不能为空");
+    const user = (await supabase.auth.getUser()).data.user;
+    const {error} = await supabase.from("diaries").insert([{
+        user_id:user.id,
+        mood:mood,
+        content:content,
+        create_at:new Date().toISOString()
+    }]);
+    if(error) alert(error.message);
+    else {
+        document.getElementById("diary‑content").value="";
+        loadDiary();
     }
-  }
-  const {error}=await supabase.from("diaries").insert([{content,mood,img_url:imgUrl}]);
-  if(error)alert("保存失败："+error.message);
-  else{
-    document.getElementById('diaryContent').value="";
-    document.getElementById('imgUpload').value="";
-    renderDiaries();
-  }
 }
 
-async function renderDiaries(){
-  const kw=document.getElementById('kwSearch').value.trim().toLowerCase();
-  const dSearch=document.getElementById('dateSearch').value;
-  let q=supabase.from("diaries").select("*,comments(*)").order("created_at",{asc:false});
-  if(dSearch)q=q.eq("date(created_at)",dSearch);
-  const {data,error}=await q;
-  if(error){console.error(error);return}
-  let list=data;
-  if(kw) list=list.filter(i=>i.content.toLowerCase().includes(kw));
-  const container=document.getElementById('diaryList');
-  container.innerHTML="";
-  const moodClassMap={"日常":"tag-daily","开心":"tag-happy","伤心":"tag-sad","想念":"tag-miss"};
-  for(const item of list){
-    const div=document.createElement('div');
-    div.className="card";
-    const tagCls=moodClassMap[item.mood]||"";
-    let html=`
-    <span class="tag ${tagCls}">${item.mood}</span>
-    <div>${new Date(item.created_at).toLocaleString()}</div>
-    <p style="margin:10px 0;white-space:pre-wrap">${escapeHtml(item.content)}</p >
-    `;
-    if(item.img_url){
-      html+=`< img class="img-preview" src="${item.img_url}">`;
-      html+=`<button class="del" onclick="delImg('${item.id}','${item.img_url}')">删除图片</button>`;
+async function loadDiary(){
+    const filterDate = document.getElementById("filter‑date").value;
+    let q = supabase.from("diaries").select("*").order("create_at",{asc:false});
+    if(filterDate){
+        const start = filterDate+"T00:00:00Z";
+        const end = filterDate+"T23:59:59Z";
+        q = q.gte("create_at",start).lte("create_at",end);
     }
-    html+=`<button class="del" onclick="delDiary('${item.id}')">删除本条日记</button>`;
-    html+=`<div><textarea placeholder="写评论" id="c_${item.id}" style="margin-top:8px"></textarea>
-    <button onclick="addComment('${item.id}')">发表评论</button></div>`;
-    html+=`<div>`;
-    if(item.comments&&item.comments.length>0){
-      for(const c of item.comments){
-        html+=`<div class="comment-block">${escapeHtml(c.content)}
-        <button class="del" onclick="delComment('${c.id}')">删除评论</button></div>`;
-      }
-    }
-    html+=`</div>`;
-    div.innerHTML=html;
-    container.appendChild(div);
-  }
+    const {data,error} = await q;
+    if(error) return alert(error.message);
+    const box = document.getElementById("diary‑list");
+    box.innerHTML="";
+    data.forEach(item=>{
+        const div = document.createElement("div");
+        let cls;
+        if(item.mood==="日常") cls="tag‑daily";
+        else if(item.mood==="开心") cls="tag‑happy";
+        else if(item.mood==="伤心") cls="tag‑sad";
+        else cls="tag‑miss";
+
+        div.className="diary‑item";
+        div.innerHTML=`
+        <span class="${cls}">${item.mood}</span>
+        <div>${new Date(item.create_at).toLocaleString()}</div>
+        <div style="margin:8px 0;">${item.content}</div>
+        <button class="btn‑danger" onclick="delDiary('${item.id}')">删除日记</button>
+        `;
+        box.appendChild(div);
+    })
 }
 
-async function delDiary(dId){
-  if(!confirm("确定删除这条日记？"))return;
-  const {error}=await supabase.from("diaries").delete().eq("id",dId);
-  if(error)alert(error.message);else renderDiaries();
-}
-
-async function delImg(dId,imgUrl){
-  if(!confirm("删除图片？"))return;
-  const fn=imgUrl.split("/").pop();
-  await supabase.storage.from("diary-images").remove([fn]);
-  const {error}=await supabase.from("diaries").update({img_url:null}).eq("id",dId);
-  if(error)alert(error.message);else renderDiaries();
-}
-
-async function addComment(diaryId){
-  const el=document.getElementById("c_"+diaryId);
-  const text=el.value.trim();
-  if(!text)return;
-  const {error}=await supabase.from("comments").insert([{diary_id:diaryId,content:text}]);
-  if(error)alert(error.message);else renderDiaries();
-}
-
-async function delComment(cId){
-  if(!confirm("删除这条评论？"))return;
-  const {error}=await supabase.from("comments").delete().eq("id",cId);
-  if(error)alert(error.message);else renderDiaries();
-}
-
-function escapeHtml(str){
-  if(!str)return"";
-  return str.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+async function delDiary(id){
+    if(!confirm("确定删除这条日记？")) return;
+    const {error}=await supabase.from("diaries").delete().eq("id",id);
+    if(error) alert(error.message);
+    else loadDiary();
 }
 </script>
 </body>
