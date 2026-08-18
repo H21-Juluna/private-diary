@@ -1,17 +1,17 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh‑CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF‑8">
+    <meta name="viewport" content="width=device‑width, initial‑scale=1.0">
     <title>双人私密日记</title>
     <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoi5Liq5Lq65paH5Lqs6K6hIiwic2hvcnRfbmFtZSI6Iuiwg+WcsCIsInN0YXJ0X3VybCI6Ii8iLCJkaXNwbGF5Ijoic3RhbmRhbG9uZSJ9">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase‑js@2"></script>
     <style>
         * {
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans‑serif;
+            box‑sizing: border‑box;
+            font‑family: ‑apple‑system,BlinkMacSystemFont,"Segoe UI",Roboto,sans‑serif;
         }
         body {
             background:#fffbf5;
@@ -105,7 +105,8 @@ const SUPABASE_URL = "https://mpawlhcontfzdvmepfnc.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_umErt65gH34u4_AhbsKKyw_g8shdWge";
 
 const { createClient } = window.supabase;
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+//❗改名！不再叫supabase，改成 sbClient，规避CDN全局变量冲突
+const sbClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
     auth: {
         persistSession: true,
         autoRefreshToken: true,
@@ -114,7 +115,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
 });
 
 window.onload = async function(){
-    const {data:{session}} = await supabase.auth.getSession();
+    const {data:{session}} = await sbClient.auth.getSession();
     if(session){
         showMain();
     }
@@ -123,7 +124,7 @@ window.onload = async function(){
 async function doLogin(){
     const email = document.getElementById("login‑email").value.trim();
     const pwd = document.getElementById("login‑pwd").value;
-    const {error} = await supabase.auth.signInWithPassword({email,password:pwd});
+    const {error} = await sbClient.auth.signInWithPassword({email,password:pwd});
     if(error) alert(error.message);
     else showMain();
 }
@@ -135,7 +136,7 @@ function showMain(){
 }
 
 async function logout(){
-    await supabase.auth.signOut();
+    await sbClient.auth.signOut();
     document.getElementById("main‑view").classList.add("hidden");
     document.getElementById("login‑view").classList.remove("hidden");
 }
@@ -144,8 +145,8 @@ async function saveDiary(){
     const mood = document.getElementById("mood‑select").value;
     const content = document.getElementById("diary‑content").value.trim();
     if(!content) return alert("内容不能为空");
-    const user = (await supabase.auth.getUser()).data.user;
-    const {error} = await supabase.from("diaries").insert([{
+    const user = (await sbClient.auth.getUser()).data.user;
+    const {error} = await sbClient.from("diaries").insert([{
         user_id:user.id,
         mood:mood,
         content:content,
@@ -160,7 +161,7 @@ async function saveDiary(){
 
 async function loadDiary(){
     const filterDate = document.getElementById("filter‑date").value;
-    let q = supabase.from("diaries").select("*").order("create_at",{asc:false});
+    let q = sbClient.from("diaries").select("*").order("create_at",{asc:false});
     if(filterDate){
         const start = filterDate+"T00:00:00Z";
         const end = filterDate+"T23:59:59Z";
@@ -191,7 +192,7 @@ async function loadDiary(){
 
 async function delDiary(id){
     if(!confirm("确定删除这条日记？")) return;
-    const {error}=await supabase.from("diaries").delete().eq("id",id);
+    const {error}=await sbClient.from("diaries").delete().eq("id",id);
     if(error) alert(error.message);
     else loadDiary();
 }
